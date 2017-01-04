@@ -35,7 +35,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             switch (activity.GetActivityType())
             {
                 case ActivityTypes.Message:
-                     await activity.PostInScratchAsync(() => new BikeSharing360LuisDialog());
+                     await activity.PostInScratchAsync(() => new BasicLuisDialog());
                     break;
                 case ActivityTypes.ConversationUpdate:
                 IConversationUpdateActivity update = activity;
