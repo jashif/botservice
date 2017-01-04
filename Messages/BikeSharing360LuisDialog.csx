@@ -14,9 +14,13 @@ using System.Collections.Generic;
 
 
 [Serializable]
-[LuisModel("_YourModelId_", "_YourSubscriptionKey_")]
+//[LuisModel("fa8e62ed-1e8e-4ac4-b357-85752ab4b281", "d9228b45e7d54b2c98dd173f002f83c4")]
+//[LuisModel("fa8e62ed-1e8e-4ac4-b357-85752ab4b281", "d9228b45e7d54b2c98dd173f002f83c4")]
 public class BikeSharing360LuisDialog : LuisDialog<object>
 {
+ public BikeSharing360LuisDialog() : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    {
+    }
     private const string EntityDateTime = "builtin.datetime.time";
 
     [LuisIntent("")]
