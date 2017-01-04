@@ -1,5 +1,6 @@
 #r "Newtonsoft.Json"
-#load "BasicLuisDialog.csx"
+#load "PostDialogExtensions.csx"
+#load "BikeSharing360LuisDialog.csx"
 
 using System;
 using System.Net;
@@ -34,27 +35,30 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             switch (activity.GetActivityType())
             {
                 case ActivityTypes.Message:
-                    await Conversation.SendAsync(activity, () => new BasicLuisDialog());
+                     await activity.PostInScratchAsync(() => new BikeSharing360LuisDialog());
                     break;
                 case ActivityTypes.ConversationUpdate:
-                    var client = new ConnectorClient(new Uri(activity.ServiceUrl));
-                    IConversationUpdateActivity update = activity;
+                IConversationUpdateActivity update = activity;
+                using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, activity))
+                {
+                    var client = scope.Resolve<IConnectorClient>();
                     if (update.MembersAdded.Any())
                     {
                         var reply = activity.CreateReply();
                         var newMembers = update.MembersAdded?.Where(t => t.Id != activity.Recipient.Id);
                         foreach (var newMember in newMembers)
                         {
-                            reply.Text = "Welcome";
+                            reply.Text = "Hi";
                             if (!string.IsNullOrEmpty(newMember.Name))
                             {
                                 reply.Text += $" {newMember.Name}";
                             }
-                            reply.Text += "!";
+                            reply.Text += ", what can I help you with?";
                             await client.Conversations.ReplyToActivityAsync(reply);
                         }
                     }
-                    break;
+                }
+                break;
                 case ActivityTypes.ContactRelationUpdate:
                 case ActivityTypes.Typing:
                 case ActivityTypes.DeleteUserData:
