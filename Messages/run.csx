@@ -1,6 +1,6 @@
 #r "Newtonsoft.Json"
 #load "PostDialogExtensions.csx"
-#load "BikeSharing360LuisDialog.csx"
+#load "BasicLuisDialog.csx"
 
 using System;
 using System.Net;
